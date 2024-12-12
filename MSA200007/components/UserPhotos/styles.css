@@ -1,0 +1,88 @@
+/* Main container for the photo section */
+.photo-section-container {
+    padding: 10px;
+    background-color: lightsteelblue;
+  }
+  
+  /* Individual photo container */
+  .photo-container {
+    padding: 10px;
+    margin-bottom: 20px;
+    background-color: blanchedalmond;
+    border-radius: 10px;
+  }
+  
+  /* Styling for the photo image */
+  .photo-container img {
+    padding: 10px;
+    width: 50%;
+    display: block;
+  }
+
+  .liked-photo {
+    border: 2px solid limegreen; /* Green border */
+    box-shadow: 0 0 10px rgba(50, 205, 50, 0.8); /* Green glow */
+  }
+  
+  .like-section .like-button {
+    margin: 5px 10px;
+    background-color: lightseagreen;
+    color: white;
+  }
+  
+  .like-section .unlike-button {
+    margin: 5px 10px;
+    background-color: lightcoral;
+    color: white;
+  }
+
+  .like-section .like-button:hover {
+    background-color: seagreen;
+  }
+
+  .like-section .unlike-button:hover {
+    background-color: coral;
+  }
+  
+  .photo-container .likes-count {
+    font-size: 1rem;
+    margin: 5px 10px;
+  }
+
+  /* Date/time styling for photos */
+  .photo-date {
+    padding: 0px 10px;
+    font-size: 0.9em;
+    color: grey;
+    background-color: blanchedalmond;
+  }
+  
+  /* Comment section styling */
+  .comment-section {
+    padding: 10px;
+  }
+  
+  /* Comment text styling */
+  .comment-text {
+    color: brown;
+    margin-bottom: 8px;
+  }
+  
+  /* Commenter link styling */
+  .commenter-link {
+    color: blue;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  
+  .commenter-link:hover {
+    color: darkblue;
+    text-decoration: underline;
+  }
+  
+  /* Date/time styling for comments */
+  .comment-date {
+    font-size: 0.8em;
+    color: grey;
+    margin-bottom: 12px;
+  }

@@ -1,0 +1,17 @@
+.topbar-appBar{
+  height: 60;
+  justify-content: "center";
+}
+
+.topbar-appBar button{
+  margin: 5px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  background-color: lightblue;
+  color: darkblue;
+}
+
+.topbar-appBar button:hover{
+  background-color: darkblue;
+  color: lightblue;
+}

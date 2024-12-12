@@ -1,0 +1,64 @@
+/* Main container for user details */
+.user-detail-container {
+  padding: 15px;
+  background-color: lightyellow;
+}
+
+/* User name styling */
+.user-detail-name {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: darkred;
+}
+
+/* Information text styling */
+.user-detail-info {
+  color: maroon;
+}
+
+/* Link for viewing photos */
+.user-detail-link {
+  color: blue;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.user-detail-link:hover {
+  color: darkblue;
+  text-decoration: underline;
+}
+
+/* Photo Preview Section */
+.photo-preview {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+/* Photo Card Styling */
+.photo-card {
+  text-align: center;
+}
+
+.photo-thumbnail {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 1px solid lightblue;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+.photo-thumbnail:hover {
+  border-color: maroon;
+}
+
+/* No Photos Message */
+.no-photo-message {
+  margin-top: 20px;
+  font-size: 1em;
+  color: darkgray;
+  text-align: center;
+}
