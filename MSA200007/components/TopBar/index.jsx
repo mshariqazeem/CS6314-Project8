@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { AppBar, Toolbar, Typography, Button, Box, Dialog, DialogActions, DialogContent, DialogTitle  } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./styles.css";
 
@@ -115,6 +115,7 @@ function TopBar({loggedUser, onLogout}) {
           {loggedUser ? (
             <Typography variant="h5" color="inherit">
               Hi {loggedUser.first_name}
+              <Button><Link to="/favorites">Favorites</Link></Button>
               <Button onClick={handleLogout}>Logout</Button>
               <Button onClick={handleOpenDialog}>Upload Photo</Button>
               {/* <input type="file" accept="image/*" name="uploadedphoto" ref={(domFileRef) => {setUploadInput(domFileRef); }} />

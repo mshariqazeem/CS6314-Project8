@@ -1,15 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Typography } from "@mui/material";
+import { Button, Modal, Typography } from "@mui/material";
 import axios from "axios";
 
 import "./styles.css";
+import { Box } from "@mui/system";
 
-function UserDetail({ userId }) {
+function UserDetail({ userId, loggedUserId, setLoggedUser }) {
   const [user, setUser] = useState(null); // stores the details of the user fetched by `userId`
   const [photoPreview, setPhotoPreview] = useState(null); // stores preview of photos
+  const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
-
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '30%',
+    bgcolor: 'white',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+    color: 'black'
+  };
   // `useEffect` fetches the user data whenever `userId` changes
   useEffect(() => {
     axios.get(`/user/${userId}`)
@@ -36,6 +49,15 @@ function UserDetail({ userId }) {
   // If `user` data is not yet loaded, display a loading message
   if (!user) return <Typography>Loading...</Typography>;
 
+  const deleteUser = async () => {
+    axios.delete(`/user/delete/${userId}`).then(response => {
+      console.log(response);
+      setLoggedUser(null);
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
+
   return (
     <div className="user-detail-container">
       {/* Display user's full name in a header */}
@@ -48,7 +70,7 @@ function UserDetail({ userId }) {
       
       {/* Link to navigate to the user's photos */}
       <Link to={`/photos/${userId}`} className="user-detail-link">View Photos</Link>
-
+      {loggedUserId === userId && <Button variant="contained" color="error" onClick={() => setOpenModal(true)}>Delete User</Button>}
       {/* Photo Preview Section */}
       {photoPreview ? (
         <div className="photo-preview">
@@ -83,7 +105,20 @@ function UserDetail({ userId }) {
           This user has not uploaded any photos yet.
         </Typography>
       )}
+
+      <Modal
+          open={openModal}
+          onClose={() => { setOpenModal(false);}}
+      >
+            <Box sx={style}>
+              <Typography>Are you sure you want to delete account ?</Typography>
+              <Button sx={{marginRight: "1em", marginTop: "1em"}} variant="contained" color="error" onClick={() => deleteUser()}>Yes</Button>
+              <Button sx={{marginRight: "1em", marginTop: "1em"}} variant="contained" color="success" onClick={() => setOpenModal(false)}>No</Button>
+            </Box>
+            
+      </Modal>
     </div>
+
   );
 }
 

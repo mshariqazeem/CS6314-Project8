@@ -1,0 +1,49 @@
+/* Flex container for the row of photos */
+.photo-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Ensures only 5 items per row */
+    gap: 15px; /* Space between the photos */
+    justify-content: start; /* Align photos to the start of the row */
+  }
+  
+  /* Each individual photo item */
+  .photo-item {
+    position: relative;
+    width: 300px; /* Set a fixed width for each photo item */
+    height: 200px; /* Set a fixed height */
+  }
+  
+  /* Style for the image within the button */
+  .thumbnail-image {
+    width: 100%; /* Ensures the image fills the container */
+    height: 100%;
+    object-fit: cover; /* Ensures the image maintains its aspect ratio */
+    border-radius: 8px; /* Adds rounded corners */
+    cursor: pointer; /* Changes cursor to pointer on hover */
+  }
+
+  /* Remove button positioning */
+  .remove-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 0, 0, 0.7);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    z-index: 10; /* Ensures the remove button stays on top of the image */
+  }
+  
+  /* Styling the remove button on hover */
+  .remove-btn:hover {
+    background-color: rgba(255, 0, 0, 1);
+  }
+  
+  /* Optional: Styling for the photo row container */
+  .photo-row {
+    padding: 20px;
+  }
+  

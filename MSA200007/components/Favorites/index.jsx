@@ -1,0 +1,85 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Modal } from "@mui/material";
+import { Box } from "@mui/system";
+import './styles.css';
+
+function Favorites({loggedUserId}) {
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '50%',
+        bgcolor: 'black',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
+        color: 'white'
+      };
+      
+    const [photos, setPhotos] = useState([]);
+    const [openModal, setOpenModal] = useState(false);
+    const [modalImg, setModalImg] = useState({});
+    useEffect(() => {
+        axios.get(`/getFavorites/${loggedUserId}`).then((response) => {
+            console.log(response.data);
+            setPhotos(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+    }, []);
+    
+    const onImageClick = (photo) => {
+        setOpenModal(true);
+        setModalImg(photo);
+    };
+
+    const handleClose = () => {
+        setOpenModal(false);
+    };
+    
+    const removeFavorite = async (photo) => {
+        const body = {
+            photoId: photo._id,
+            userId: loggedUserId
+        };
+        await axios.post("/removeFavorite", body).then(response => {
+            setPhotos(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+    };
+    return(
+        <div>
+            <div className="photo-row">
+                {
+                    photos.map((photo) => {
+                        return (
+                            <div key={photo._id} className="photo-item">
+                                <button className="remove-btn" onClick={() => removeFavorite(photo)}> X </button>   
+                                <button aria-label="Delete" className="photo-thumbnail" onClick={() => {
+                                    onImageClick(photo);
+                                }}> 
+                                    <img className="thumbnail-image" style={{height:"200px", width:"300px"}} src={`images/${photo.file_name}`} width="100%" /> 
+                                </button>
+                            </div>
+                        );
+                    })
+                }
+            </div>
+            <Modal
+             open={openModal}
+             onClose={handleClose}
+            >
+                <Box sx={style}>
+                    <img src={`images/${modalImg.file_name}`} width="100%" />
+                    <p>{new Date(modalImg.date_time).toLocaleString()}</p>
+                </Box>
+                
+            </Modal>
+        </div>
+    );
+}
+
+export default Favorites;

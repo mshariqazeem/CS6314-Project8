@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
   description: String,
   occupation: String,
   login_name: String,
-  password: String // Placeholder for future authentication implementation
+  password: String, // Placeholder for future authentication implementation
+  favorites: [mongoose.Schema.Types.ObjectId]
 });
 
 /**

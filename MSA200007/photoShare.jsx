@@ -9,16 +9,17 @@ import UserDetail from "./components/UserDetail";
 import UserList from "./components/UserList";
 import UserPhotos from "./components/UserPhotos";
 import LoginRegister from "./components/LoginRegister";
+import Favorites from "./components/Favorites";
 
-function UserDetailRoute() {
+function UserDetailRoute({loggedUserId, setLoggedUser}) {
   const { userId } = useParams();
   console.log("UserDetailRoute: userId is:", userId);
-  return <UserDetail userId={userId} />;
+  return <UserDetail userId={userId} loggedUserId={loggedUserId} setLoggedUser={setLoggedUser} />;
 }
 
-function UserPhotosRoute() {
+function UserPhotosRoute({loggedUserId}) {
   const { userId } = useParams();
-  return <UserPhotos userId={userId} />;
+  return <UserPhotos userId={userId} loggedUserId={loggedUserId} />;
 }
 
 function PhotoShare() {
@@ -46,9 +47,10 @@ function PhotoShare() {
               <Routes>
                 <Route path="/" element={loggedUser ? <Navigate to={`/users/${loggedUser._id}`} /> : <Navigate to="/login-register" />} />
                 <Route path="/users" element={loggedUser ? <Navigate to={`/users/${loggedUser._id}`} /> : <Navigate to="/login-register" />} />
-                <Route path="/users/:userId" element={loggedUser ? <UserDetailRoute /> : <Navigate to="/login-register" />} />
+                <Route path="/users/:userId" element={loggedUser ? <UserDetailRoute setLoggedUser={setLoggedUser} loggedUserId={loggedUser._id} /> : <Navigate to="/login-register" />} />
                 <Route path="/photos" element={loggedUser ? <Navigate to={`/photos/${loggedUser._id}`} /> : <Navigate to="/login-register" />} />
-                <Route path="/photos/:userId" element={loggedUser ? <UserPhotosRoute /> : <Navigate to="/login-register" />} />
+                <Route path="/photos/:userId" element={loggedUser ? <UserPhotosRoute loggedUserId={loggedUser._id} /> : <Navigate to="/login-register" />} />
+                <Route path="/favorites" element={loggedUser ? <Favorites loggedUserId={loggedUser._id} /> : <Navigate to="/login-register" />} />
                 <Route path="/login-register" element={!loggedUser ? <LoginRegister onLogin={setLoggedUser} /> : <Navigate to="/" />}/>
               </Routes>
             </Paper>
