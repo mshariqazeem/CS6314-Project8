@@ -144,7 +144,7 @@ function UserPhotos({ userId, loggedUserId }) {
             </Typography>
           </div>
           { loggedUserId === photo.user_id && 
-            <Button size="small" variant="contained" color="error" onClick={() => deletePhoto(photo._id)}>Delete Photo</Button>}
+            <Button size="small" style={{marginLeft:'5px', marginRight: '1em'}} variant="contained" color="error" onClick={() => deletePhoto(photo._id)}>Delete Photo</Button>}
           {photo.favorites.includes(loggedUserId) && <p> &#9733; </p>}<Button size="small" variant="contained" onClick={() => handleFavoriteClick(photo._id)} disabled={photo.favorites.includes(loggedUserId)} > &#9733; Add to Favorites</Button>
           {/* Display comments associated with each photo, if any */}
           <div className="comment-section">
@@ -162,7 +162,7 @@ function UserPhotos({ userId, loggedUserId }) {
                 </Typography>
                 {
                   comment.user._id === loggedUserId 
-                  && <Button size="small" variant="contained" color="error" onClick={() => deleteComment(comment._id, photo._id)}>delete</Button>
+                  && <Button size="small" style={{marginLeft: '1em', marginBottom: '1em'}} variant="contained" color="error" onClick={() => deleteComment(comment._id, photo._id)}>delete</Button>
                 }
               </div>
             ))}

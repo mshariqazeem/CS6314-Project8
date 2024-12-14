@@ -70,7 +70,9 @@ function UserDetail({ userId, loggedUserId, setLoggedUser }) {
       
       {/* Link to navigate to the user's photos */}
       <Link to={`/photos/${userId}`} className="user-detail-link">View Photos</Link>
-      {loggedUserId === userId && <Button variant="contained" color="error" onClick={() => setOpenModal(true)}>Delete User</Button>}
+      <br/>
+      <br/>
+      {loggedUserId === userId && <Button variant="contained" color="error" size="small" onClick={() => setOpenModal(true)}>Delete User</Button>}
       {/* Photo Preview Section */}
       {photoPreview ? (
         <div className="photo-preview">

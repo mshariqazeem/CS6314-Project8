@@ -16,12 +16,15 @@
   /* Style for the image within the button */
   .thumbnail-image {
     width: 100%; /* Ensures the image fills the container */
-    height: 100%;
-    object-fit: cover; /* Ensures the image maintains its aspect ratio */
+    height: auto;
+    object-fit: contain; /* Ensures the image maintains its aspect ratio */
     border-radius: 8px; /* Adds rounded corners */
     cursor: pointer; /* Changes cursor to pointer on hover */
   }
 
+  .photo-thumbnail2 {
+    border: none;
+  }
   /* Remove button positioning */
   .remove-btn {
     position: absolute;
@@ -46,4 +49,3 @@
   .photo-row {
     padding: 20px;
   }
-  

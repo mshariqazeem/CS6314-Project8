@@ -631,6 +631,10 @@ app.delete("/user/delete/:userId", async (request, response) => {
         { favorites: userId },  // Find photos where the user is in the 'favorites' array
         { $pull: { favorites: userId } }  // Remove the user's ID from the 'favorites' array
       );
+      await Photo.updateMany(
+        {"comments.user_id": userId },
+        {$pull : {comments: {user_id: userId}}} // update operation
+      );
       request.session.destroy();
       response.status(200).send("Deleted User");
       
