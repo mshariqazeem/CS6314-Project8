@@ -345,7 +345,6 @@ app.get("/photosOfUser/:id", requireLogin, async function (request, response) {
         select: "_id first_name last_name",
       })
       .sort({ likes: -1, date_time: -1 }); // Sort by likes (desc), then timestamp (desc)
-
     // Format the photos and their comments
     const photosWithComments = photos.map((photo) => {
       const formattedComments = photo.comments.map((comment) => ({
@@ -369,6 +368,7 @@ app.get("/photosOfUser/:id", requireLogin, async function (request, response) {
         comments: formattedComments,
         likesCount: photo.likes.length, // Add likes count
         likedByUser: photo.likes.some((like) => like._id.toString() === loggedInUserId), // Check if the logged-in user liked the photo
+        favorites: photo.favorites
       };
     });
 
@@ -518,6 +518,135 @@ app.post("/photos/new", async (request, response) => {
     response.status(400).json(error);
   }
 });
+
+app.post("/addFavorite", async (request, response) => {
+  if(request.session.user != null) {
+    const {photoId, userId} = request.body;
+    const photo = await Photo.findById(photoId);
+    photo.favorites.push(userId);
+    await photo.save();
+    const user  = await User.findById(userId);
+    user.favorites.push(photoId);
+    await user.save();
+    response.status(200).send("Sucessfully added favorites");
+  } else {
+    response.status(401).send("UnAuthorized please login");
+  }
+});
+
+app.get("/getFavorites/:userId", async (request, response) => {
+  if(request.session.user != null) {
+    const userId = request.params.userId;
+    const user = await User.findById(userId);
+    //console.log(user);
+    const photos = await Photo.find({_id: {$in: user.favorites}});
+    //console.log(photos);
+    response.status(200).send(photos);
+  } else {
+    response.status(401).send("UnAuthorized please login");
+  }
+});
+
+app.post("/removeFavorite", async (request,response) => {
+  if(request.session.user != null) {
+    const {photoId, userId} = request.body;
+    const photo = await Photo.findById(photoId);
+    const userObjectId = new mongoose.Types.ObjectId(userId);
+    const photoObjectId = new mongoose.Types.ObjectId(photoId);
+    photo.favorites = photo.favorites.filter(id => !id.equals(userObjectId) );
+    await photo.save();
+    const user = await User.findById(userId);
+    user.favorites = user.favorites.filter(id => !id.equals(photoObjectId));
+    user.save();
+    const photos = await Photo.find({_id: {$in: user.favorites}});
+    //console.log(photos);
+    response.status(200).send(photos);
+  } else {
+    response.status(401).send("UnAuthorized please login");
+  }
+});
+
+app.delete("/comment/delete/", async (request, response) => {
+  //const comment_id = request.params.comment_id;
+  if(request.session.user != null) {
+     try {
+       const photo_id = request.body.photo_id;
+       const comment_id = request.body.comment_id;
+       await Photo.updateOne(
+         { _id: photo_id },
+         { $pull: { comments: { _id: comment_id } } }
+       )
+       .then((result) => {
+         console.log(`Deleted comments`, result);
+       })
+       .catch((error) => {
+         console.error("Error deleting comment:", error);
+       });
+   } catch (error) {
+     response.status(500).send(error);
+   }
+  } else {
+   response.status(401).send("UnAuthorized please login");
+  }
+});
+
+app.delete("/photo/delete/:photoId", async (request, response) => {
+  if(request.session.user != null) {
+    try {
+      const photoId = request.params.photoId;
+      const photo = Photo.findById(photoId);
+      if(photo.user_id !== request.session.user._id) {
+        response.status(401).send("Unauthorized, you can only delete your photos");
+      }
+      //console.log(photoId);
+      await Photo.deleteOne({_id: photoId});
+      await User.updateMany(
+        { favorites: photoId },  // Find users where the photo_id exists in the favorites array
+        { $pull: { favorites: photoId } }  // Remove the photo_id from the favorites array
+      );
+    } catch (error) {
+      console.log(error);
+      response.status(500).send(error);
+    }
+  } else {
+    response.status(401).send("UnAuthorized please login");
+  }
+});
+
+app.delete("/user/delete/:userId", async (request, response) => {
+  if(request.session.user != null)  {
+    const userId = request.params.userId;
+    try {
+      if(request.session.user._id !== userId) {
+        response.status(401).send("UnAuthorized for this operation");
+      }
+      await User.deleteOne({_id : userId});
+      await Photo.deleteMany({user_id: userId});
+      await Photo.updateMany(
+        { likes: userId },  // Find photos where the user is in the 'likes' array
+        { $pull: { likes: userId } }  // Remove the user's ID from the 'likes' array
+      );
+      
+      await Photo.updateMany(
+        { favorites: userId },  // Find photos where the user is in the 'favorites' array
+        { $pull: { favorites: userId } }  // Remove the user's ID from the 'favorites' array
+      );
+      await Photo.updateMany(
+        {"comments.user_id": userId },
+        {$pull : {comments: {user_id: userId}}} // update operation
+      );
+      request.session.destroy();
+      response.status(200).send("Deleted User");
+      
+    } catch(error) {
+      response.status(404).send(error);
+      console.log(error);
+    }
+  } else {
+    response.status(401).send("UnAuthorized please login");
+  }
+});
+
 const server = app.listen(3000, function () {
   const port = server.address().port;
   console.log(

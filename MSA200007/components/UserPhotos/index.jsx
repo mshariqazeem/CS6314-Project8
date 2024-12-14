@@ -5,7 +5,7 @@ import axios from "axios";
 
 import "./styles.css";
 
-function UserPhotos({ userId }) {
+function UserPhotos({ userId, loggedUserId }) {
   const [photos, setPhotos] = useState([]); // stores an array of photo objects for the specified user
 
   // `useEffect` runs when `userId` changes, fetching the user's photos from the model
@@ -74,6 +74,44 @@ function UserPhotos({ userId }) {
       });
   };
   
+  const handleFavoriteClick = async(photo_id) => {
+    console.log("handle favorite clicked");
+    const body = {
+      photoId: photo_id,
+      userId : loggedUserId
+    };
+    await axios.post("/addFavorite", body).then((response) => {
+      console.log(response);
+    }).catch(error => {
+      console.log(error);
+    });
+  };
+
+  const deleteComment = async (comment_id, photo_id) => {
+    console.log("delete comment called " + loggedUserId);
+    const body = {
+      photo_id : photo_id,
+      comment_id : comment_id
+    };
+    console.log(body);
+    axios.delete('/comment/delete/', {data : body})
+      .then((response) => {
+        console.log(response);
+      }).catch(error => {
+        console.log(error);
+      }
+    );
+  };
+
+  const deletePhoto =  async (photo_id) => {
+    console.log("Delete photo called");
+    axios.delete(`/photo/delete/${photo_id}`).then((response) => {
+      console.log(response);
+    }).catch(error => {
+      console.log(error);
+    });
+  };
+
   return (
     <div className="photo-section-container">
       {/* Header for the photos section */}
@@ -105,7 +143,9 @@ function UserPhotos({ userId }) {
               Likes: {photo.likesCount || 0}
             </Typography>
           </div>
-
+          { loggedUserId === photo.user_id && 
+            <Button size="small" style={{marginLeft:'5px', marginRight: '1em'}} variant="contained" color="error" onClick={() => deletePhoto(photo._id)}>Delete Photo</Button>}
+          {photo.favorites.includes(loggedUserId) && <p> &#9733; </p>}<Button size="small" variant="contained" onClick={() => handleFavoriteClick(photo._id)} disabled={photo.favorites.includes(loggedUserId)} > &#9733; Add to Favorites</Button>
           {/* Display comments associated with each photo, if any */}
           <div className="comment-section">
             {photo.comments && photo.comments.map(comment => (
@@ -120,6 +160,10 @@ function UserPhotos({ userId }) {
                 <Typography variant="caption" className="comment-date">
                   {new Date(comment.date_time).toLocaleString()}
                 </Typography>
+                {
+                  comment.user._id === loggedUserId 
+                  && <Button size="small" style={{marginLeft: '1em', marginBottom: '1em'}} variant="contained" color="error" onClick={() => deleteComment(comment._id, photo._id)}>delete</Button>
+                }
               </div>
             ))}
               <div className="newCommentsForm">
